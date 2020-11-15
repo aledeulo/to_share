@@ -55,7 +55,7 @@ Access sample on terminal: curl -X PUT http://localhost:8080/gateways/addPeriphe
 Name: removePeripheralFromGateway(gId, pId)
 Mapping: /delPeripheral/{gId}/{pId}
 Description: This function removes from the peripheral devices list in the gateway(gId) the id(pId) of the peripheral device that we want to remove
-Access sample on terminal: curl -X PUT http://localhost:8080/gateways/delPeripheral/1/5
+Access sample on terminal: curl -X DELETE http://localhost:8080/gateways/delPeripheral/1/5
 ```
 
 
