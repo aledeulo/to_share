@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -38,7 +39,7 @@ public class PeripheralsController {
         return ResponseEntity.ok().body(p);
     }
 
-    @GetMapping("/getPeripheral/{id}")
+    @GetMapping("/get/{id}")
     public ResponseEntity<Peripheral> getPeripheralById(@PathVariable(value = "id") String id) {
         if (SupportTools.isANumber(id)) {
             return peripheralRepository.findById(Long.parseLong(id))
@@ -48,7 +49,7 @@ public class PeripheralsController {
         return ResponseEntity.notFound().build();
     }
 
-    @PutMapping("/updatePeripheral/{id}")
+    @PutMapping("/update/{id}")
     public ResponseEntity<Peripheral> updatePeripheral(@PathVariable(value = "id") String id, @Valid @RequestBody Peripheral p) {
         if (SupportTools.isANumber(id)) {
             return peripheralRepository.findById(Long.parseLong(id))
@@ -63,13 +64,20 @@ public class PeripheralsController {
         return ResponseEntity.notFound().build();
     }
 
-    @DeleteMapping("/delPeripheral/{id}")
+    @DeleteMapping("/remove/{id}")
     public ResponseEntity<?> removePeripherals(@PathVariable(value = "id") String id) {
-        if (SupportTools.isANumber(id)) {
+        if (SupportTools.isANumber(id) || id.equals("*")) {
+            List<Gateway> gatewayList = (List<Gateway>) gatewayRepository.findAll();
+            if (id.equals("*")) {
+                peripheralRepository.deleteAll();
+                gatewayList.forEach(g -> g.setPeripheralIdlList(new ArrayList<>()));
+                gatewayRepository.saveAll(gatewayList);
+                return ResponseEntity.ok().body("All peripheral devices were deleted successfully!");
+            }
+
             Peripheral p = peripheralRepository.findById(Long.parseLong(id))
                     .orElse(null);
             if (p != null) {
-                List<Gateway> gatewayList = (List<Gateway>) gatewayRepository.findAll();
                 gatewayList.forEach(g -> {
                     boolean exist = g.getPeripheralIdlList().stream().anyMatch(x -> x == Long.parseLong(id));
                     if (exist) {

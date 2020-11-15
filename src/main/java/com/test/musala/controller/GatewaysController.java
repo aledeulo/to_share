@@ -52,30 +52,14 @@ public class GatewaysController {
         return ResponseEntity.notFound().build();
     }
 
-    @PostMapping("/add/peripherals")
-    public ResponseEntity<?> addPeripheral(@Valid @RequestBody Peripheral p) {
-        if (p == null)
-            return ResponseEntity.notFound().build();
-
-        if (!SupportTools.dateValidator.test(p.getCreated().toString()))
-            return ResponseEntity.ok().body("Bad format for the creation date!");
-
-        boolean itIs = peripheralRepository.findById(p.getUID()).isPresent();
-        if (itIs)
-            return ResponseEntity.ok().body("The device already exist!");
-
-        peripheralRepository.save(p);
-        return ResponseEntity.ok().body(p);
-    }
-
-    @GetMapping("/getGateway/{id}")
+    @GetMapping("/get/{id}")
     public ResponseEntity<Gateway> getGatewayById(@PathVariable(value = "id") String id) {
         return gatewayRepository.findById(id).map(
                 gateway -> ResponseEntity.ok().body(gateway))
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @PutMapping("/updateGateway/{id}")
+    @PutMapping("/update/{id}")
     public ResponseEntity<Gateway> updateGateway(@PathVariable(value = "id") String id, @Valid @RequestBody Gateway gateway) {
         if (SupportTools.validateIP4Address(gateway.getIpAddress())) {
             return gatewayRepository.findById(id).map(

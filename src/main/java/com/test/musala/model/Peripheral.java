@@ -18,6 +18,12 @@ public class Peripheral {
     public Peripheral() {
     }
 
+    public Peripheral(@NotBlank(message = "Vendor empty") String vendor, @NotBlank(message = "Status empty") String status, Date created) {
+        this.vendor = vendor;
+        this.status = status;
+        this.created = created;
+    }
+
     public Peripheral(Long UID, @NotEmpty(message = "Vendor empty") String vendor, Date created, @NotEmpty(message = "Status empty") String status) {
         this.UID = UID;
         this.vendor = vendor;
