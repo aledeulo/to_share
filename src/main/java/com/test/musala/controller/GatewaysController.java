@@ -34,22 +34,22 @@ public class GatewaysController {
 
     @PostMapping("/add")
     public ResponseEntity<?> addGateway(@Valid @RequestBody Gateway gateway) throws NoSuchAlgorithmException {
-        if (SupportTools.validateIP4Address(gateway.getIpAddress())) {
-            boolean isRepeated = checkIpAddressExistence((List<Gateway>) gatewayRepository.findAll(), gateway.getIpAddress());
-            if (isRepeated)
-                return ResponseEntity.ok().body("Ip address already exist in the gateway!");
-
-            String serial = SupportTools.toHash(gateway.getName() + gateway.getIpAddress());
-            boolean itIs = gatewayRepository.findById(serial).isPresent();
-            if (!itIs) {
-                gateway.setSerialNumber(serial);
-                gateway.setPeripheralIdlList(new ArrayList<>());
-                gatewayRepository.save(gateway);
-                return ResponseEntity.ok().body("This gateway was created successfully: " + gateway);
-            }
-            return ResponseEntity.ok().body("This Gateway already exist!");
+        if (!SupportTools.validateIP4Address(gateway.getIpAddress())) {
+            return ResponseEntity.ok().body("Ip address format is not correct!");
         }
-        return ResponseEntity.notFound().build();
+        boolean isRepeated = checkIpAddressExistence((List<Gateway>) gatewayRepository.findAll(), gateway.getIpAddress());
+        if (isRepeated)
+            return ResponseEntity.ok().body("Ip address already exist in the gateway!");
+
+        String serial = SupportTools.toHash(gateway.getName() + gateway.getIpAddress());
+        boolean itIs = gatewayRepository.findById(serial).isPresent();
+        if (!itIs) {
+            gateway.setSerialNumber(serial);
+            gateway.setPeripheralIdlList(new ArrayList<>());
+            gatewayRepository.save(gateway);
+            return ResponseEntity.ok().body("This gateway was created successfully: " + gateway);
+        }
+        return ResponseEntity.ok().body("This Gateway already exist!");
     }
 
     @GetMapping("/get/{id}")
@@ -94,15 +94,15 @@ public class GatewaysController {
         String result = updatePeripheralsInGateway(gId, pId, "add");
         if (result.equals("ok"))
             return ResponseEntity.ok().body("Peripheral device added to the gateway!");
-        return ResponseEntity.ok().body("Peripheral could not be added to to the gateway!");
+        return ResponseEntity.ok().body("An error append! Possible reason: There are already 10 devices on this gateway: " + gId);
     }
 
-    @PutMapping("/delPeripheral/{gId}/{pId}")
+    @DeleteMapping("/delPeripheral/{gId}/{pId}")
     public ResponseEntity<String> removePeripheralFromGateway(@PathVariable(value = "gId") String gId, @PathVariable(value = "pId") String pId) {
         String result = updatePeripheralsInGateway(gId, pId, "delete");
         if (result.equals("ok"))
             return ResponseEntity.ok().body("Peripheral device deleted from the gateway!");
-        return ResponseEntity.notFound().build();
+        return ResponseEntity.ok().body("Something happen while deleting a peripheral device from the gateway!");
     }
 
     public String updatePeripheralsInGateway(String gId, String pId, String action) {

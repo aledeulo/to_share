@@ -11,7 +11,7 @@ import java.util.regex.Pattern;
 
 public class SupportTools implements Serializable {
 
-    private static final String IPV4_PATTERN = "^(([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])(\\.(?!$)|$)){4}$";
+    private static final String IPV4_PATTERN = "^(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})$";
     private static final Pattern IP_PATTERN = Pattern.compile(IPV4_PATTERN);
     private static final String NUMBER_PATTERN = "[0-9]*";
     private static final Pattern NUM_PATTERN = Pattern.compile(NUMBER_PATTERN);
@@ -21,7 +21,7 @@ public class SupportTools implements Serializable {
     public static final Predicate<String> dateValidator = x -> DATE_MATCHER.matcher(x).matches();
 
     public static boolean validateIP4Address(String ip) {
-        return IP_PATTERN.matcher(ip).matches();
+        return IP_PATTERN.matcher(ip).find();
     }
 
     public static boolean isANumber(String id) {

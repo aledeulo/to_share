@@ -36,7 +36,7 @@ public class PeripheralsController {
             return ResponseEntity.ok().body("Bad format for the creation date!");
 
         peripheralRepository.save(p);
-        return ResponseEntity.ok().body(p);
+        return ResponseEntity.ok().body("Peripheral device created successfully: " + p);
     }
 
     @GetMapping("/get/{id}")

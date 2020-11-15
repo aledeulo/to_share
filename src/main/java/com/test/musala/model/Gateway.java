@@ -70,11 +70,9 @@ public class Gateway {
 
     @Override
     public String toString() {
-        StringBuilder builder = new StringBuilder();
-        builder.append("Serial number: ").append(getSerialNumber())
+        return new StringBuilder().append("Serial number: ").append(getSerialNumber())
                 .append(" Name: ").append(getName())
                 .append(" IP address: ").append(getIpAddress())
-                .append(" Devices: ").append(getPeripheralIdlList().toString());
-        return builder.toString();
+                .append(" Devices: ").append(getPeripheralIdlList().toString()).toString();
     }
 }

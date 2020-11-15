@@ -67,11 +67,9 @@ public class Peripheral {
 
     @Override
     public String toString() {
-        StringBuilder builder = new StringBuilder();
-        builder.append("UID: ").append(getUID())
+        return new StringBuilder().append("UID: ").append(getUID())
                 .append(" Vendor: ").append(getVendor())
                 .append(" Created at: ").append(getCreated().toString())
-                .append(" Status: ").append(getStatus());
-        return builder.toString();
+                .append(" Status: ").append(getStatus()).toString();
     }
 }
