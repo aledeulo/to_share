@@ -1,10 +1,6 @@
 package com.test.musala.model;
 
-import javax.persistence.ElementCollection;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.validation.constraints.NotBlank;
+import javax.persistence.*;
 import java.util.List;
 
 @Entity
@@ -12,28 +8,22 @@ import java.util.List;
 public class Gateway {
 
     @Id
+    @Column(name = "id")
     private String serialNumber;
-    @NotBlank(message = "name can't be empty")
+    @Column(name = "name")
     private String name;
-    @NotBlank(message = "ip address can't be empty")
+    @Column(name = "ipAddress")
     private String ipAddress;
-    @ElementCollection
-    private List<Long> peripheralIdlList;
+    @OneToMany(mappedBy = "gateway", cascade = {CascadeType.ALL})
+    private List<Peripheral> peripheralIdlList;
 
     public Gateway() {
     }
 
-    public Gateway(String serialNumber, @NotBlank(message = "name can't be empty") String name, @NotBlank(message = "ip address can't be empty") String ipAddress) {
+    public Gateway(String serialNumber, String name, String ipAddress) {
         this.serialNumber = serialNumber;
         this.name = name;
         this.ipAddress = ipAddress;
-    }
-
-    public Gateway(String serialNumber, @NotBlank(message = "name can't be empty") String name, @NotBlank(message = "ip address can't be empty") String ipAddress, List<Long> peripheralIdlList) {
-        this.serialNumber = serialNumber;
-        this.name = name;
-        this.ipAddress = ipAddress;
-        this.peripheralIdlList = peripheralIdlList;
     }
 
     public String getSerialNumber() {
@@ -60,19 +50,18 @@ public class Gateway {
         this.ipAddress = ipAddress;
     }
 
-    public List<Long> getPeripheralIdlList() {
+    public List<Peripheral> getPeripheralIdlList() {
         return peripheralIdlList;
     }
 
-    public void setPeripheralIdlList(List<Long> peripheralIdlList) {
+    public void setPeripheralIdlList(List<Peripheral> peripheralIdlList) {
         this.peripheralIdlList = peripheralIdlList;
     }
 
     @Override
     public String toString() {
-        return new StringBuilder().append("Serial number: ").append(getSerialNumber())
-                .append(" Name: ").append(getName())
-                .append(" IP address: ").append(getIpAddress())
-                .append(" Devices: ").append(getPeripheralIdlList().toString()).toString();
+        return new StringBuilder().append("serialNumber:").append(getSerialNumber())
+                .append(", name:").append(getName())
+                .append(", ipAddress: ").append(getIpAddress()).append("peripheralIdlList").append(getPeripheralIdlList()).toString();
     }
 }

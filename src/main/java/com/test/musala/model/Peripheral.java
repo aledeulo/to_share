@@ -1,38 +1,46 @@
 package com.test.musala.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
 import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
 import java.sql.Date;
 
 @Entity
 @Table(name = "peripheral")
 public class Peripheral {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long UID;
-    @NotBlank(message = "Vendor empty")
+    @Column(name = "vendor")
     private String vendor;
-    @NotBlank(message = "Status empty")
+    @Column(name = "status")
     private String status;
+    @Column(name = "created")
     private Date created;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "gateway_id")
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @JsonIgnore
+    private Gateway gateway;
 
     public Peripheral() {
     }
 
-    public Peripheral(@NotBlank(message = "Vendor empty") String vendor, @NotBlank(message = "Status empty") String status, Date created) {
+    public Peripheral(String vendor, String status, Date created) {
         this.vendor = vendor;
         this.status = status;
         this.created = created;
     }
 
-    public Peripheral(Long UID, @NotEmpty(message = "Vendor empty") String vendor, Date created, @NotEmpty(message = "Status empty") String status) {
+    public Peripheral(Long UID, String vendor, Date created, String status) {
         this.UID = UID;
         this.vendor = vendor;
         this.created = created;
         this.status = status;
     }
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Long getUID() {
         return UID;
     }
@@ -63,6 +71,14 @@ public class Peripheral {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public Gateway getGateway() {
+        return gateway;
+    }
+
+    public void setGateway(Gateway gateway) {
+        this.gateway = gateway;
     }
 
     @Override

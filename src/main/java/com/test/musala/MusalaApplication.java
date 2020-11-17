@@ -13,7 +13,6 @@ import org.springframework.context.annotation.ComponentScan;
 
 import java.security.NoSuchAlgorithmException;
 import java.sql.Date;
-import java.util.ArrayList;
 import java.util.stream.LongStream;
 
 @SpringBootApplication
@@ -38,7 +37,7 @@ public class MusalaApplication {
                         } catch (NoSuchAlgorithmException e) {
                             e.printStackTrace();
                         }
-                        return new Gateway(serial, name, ipAddress, new ArrayList<>());
+                        return new Gateway(serial, name, ipAddress);
                     }).map(repository::save)
                     .forEach(System.out::println);
         };

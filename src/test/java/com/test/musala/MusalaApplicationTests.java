@@ -13,7 +13,6 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.sql.Date;
-import java.util.ArrayList;
 
 import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -25,7 +24,7 @@ class MusalaApplicationTests extends MusalaAbstractTest {
     /*TESTS OVER GATEWAYS*/
     @Test
     public void getAllGateways() throws Exception {
-        String path = "/gateways/get";
+        String path = "/gateways";
         mvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
         MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.get(path)
                 .accept(MediaType.APPLICATION_JSON_VALUE)).andReturn();
@@ -40,29 +39,28 @@ class MusalaApplicationTests extends MusalaAbstractTest {
     @Test
     public void addGateway() throws Exception {
         mvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
-        String path = "/gateways/add";
+        String path = "/gateways";
         String name = "Gateway172";
         String ipAddress = "172.20.10.11";
         String hash = SupportTools.toHash(name + ipAddress);
-        Gateway gateway = new Gateway(hash, name, ipAddress, new ArrayList<>());
+        Gateway gateway = new Gateway(hash, name, ipAddress);
         String inputJson = super.mapToJson(gateway);
         MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.post(path)
                 .contentType(MediaType.APPLICATION_JSON_VALUE).content(inputJson)).andReturn();
 
         int status = mvcResult.getResponse().getStatus();
-        assertEquals(200, status);
         String content = mvcResult.getResponse().getContentAsString();
-        assertEquals(content, "This gateway was created successfully: " + gateway);
+        assertEquals(201, status);
     }
 
     @Test
     public void wrongIpAddress() throws Exception {
         mvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
-        String path = "/gateways/add";
+        String path = "/gateways";
         String name = "Gateway172";
         String ipAddress = "172.20.10.112222";
         String hash = SupportTools.toHash(name + ipAddress);
-        Gateway gateway = new Gateway(hash, name, ipAddress, new ArrayList<>());
+        Gateway gateway = new Gateway(hash, name, ipAddress);
         String inputJson = super.mapToJson(gateway);
         MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.post(path)
                 .contentType(MediaType.APPLICATION_JSON_VALUE).content(inputJson)).andReturn();
@@ -76,7 +74,7 @@ class MusalaApplicationTests extends MusalaAbstractTest {
     /*TEST OVER PERIPHERAL DEVICES*/
     @Test
     public void getAllPeripheralDevices() throws Exception {
-        String path = "/peripherals/get";
+        String path = "/peripherals";
         mvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
         MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.get(path)
                 .accept(MediaType.APPLICATION_JSON_VALUE)).andReturn();
@@ -91,7 +89,7 @@ class MusalaApplicationTests extends MusalaAbstractTest {
     @Test
     public void addPeripheralDevice() throws Exception {
         mvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
-        String path = "/peripherals/add";
+        String path = "/peripherals/f44f1a16d93c110cf49193bdf7c4e8c6";
         String vendor = "Vendor172";
         String vStatus = "online";
         Date created = new Date(new java.util.Date().getTime());
@@ -103,8 +101,7 @@ class MusalaApplicationTests extends MusalaAbstractTest {
         int status = mvcResult.getResponse().getStatus();
         assertEquals(200, status);
         String content = mvcResult.getResponse().getContentAsString();
-        boolean answer = content.contains("Peripheral device created successfully: ");
+        boolean answer = !content.contains("null");
         Assertions.assertTrue(answer);
     }
-
 }
